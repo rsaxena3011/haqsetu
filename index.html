@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HaqSetu — Every government benefit you are owed, in your language</title>
+<meta name="description" content="Answer a few simple questions and find every central government scheme you actually qualify for — why you qualify, the documents to carry, and where to apply. In English and Hindi.">
+<style>
+  :root{
+    --green:#0b6e4f; --green-dark:#084c37; --saffron:#e8760a; --ink:#1d2733;
+    --paper:#fff9f0; --card:#ffffff; --line:#e7dcc8; --soft:#f3ead9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Noto Sans","Noto Sans Devanagari",sans-serif;background:var(--paper);color:var(--ink);line-height:1.55}
+  header{background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%);color:#fff;padding:28px 18px 24px;text-align:center}
+  header h1{margin:0;font-size:2.4rem;letter-spacing:.5px}
+  header h1 .accent{color:#ffb25e}
+  header p{margin:8px auto 0;max-width:640px;font-size:1.08rem;opacity:.95}
+  .langbar{margin-top:16px}
+  .langbar button{background:rgba(255,255,255,.14);color:#fff;border:2px solid rgba(255,255,255,.55);border-radius:999px;padding:7px 20px;font-size:1rem;cursor:pointer;margin:0 4px}
+  .langbar button.active{background:#fff;color:var(--green-dark);font-weight:700}
+  main{max-width:860px;margin:0 auto;padding:22px 16px 40px}
+  .pain{background:#fff;border:1px solid var(--line);border-left:6px solid var(--saffron);border-radius:12px;padding:16px 18px;font-size:1.05rem}
+  .steps{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 4px}
+  .steps div{flex:1 1 200px;background:var(--soft);border-radius:12px;padding:12px 14px;font-size:.98rem}
+  .steps b{color:var(--green-dark)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:18px;box-shadow:0 2px 10px rgba(90,60,10,.06)}
+  h2{margin:0 0 12px;font-size:1.3rem;color:var(--green-dark)}
+  label{display:block;font-weight:600;margin:14px 0 6px}
+  input[type=number],select{width:100%;padding:12px;border:1.5px solid #cbbfa5;border-radius:10px;font-size:1.05rem;background:#fff}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  .flags{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-top:6px}
+  @media(max-width:640px){.flags{grid-template-columns:1fr}}
+  .flags label{font-weight:500;margin:0;display:flex;gap:10px;align-items:flex-start;background:#fdf6e9;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+  .flags input{width:20px;height:20px;margin-top:2px;accent-color:var(--green)}
+  .samples{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .samples button{background:#fff;border:1.5px solid var(--green);color:var(--green-dark);border-radius:999px;padding:8px 14px;font-size:.98rem;cursor:pointer}
+  .samples button:hover{background:var(--green);color:#fff}
+  .find{width:100%;margin-top:20px;background:var(--saffron);color:#fff;border:none;border-radius:12px;padding:16px;font-size:1.2rem;font-weight:700;cursor:pointer}
+  .find:hover{background:#cf6707}
+  .result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .scheme{border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px;background:#fff}
+  .scheme h3{margin:0;font-size:1.22rem;color:var(--green-dark)}
+  .tag{display:inline-block;background:var(--soft);color:var(--green-dark);border-radius:999px;padding:2px 12px;font-size:.85rem;font-weight:700;margin-left:8px;vertical-align:middle}
+  .benefit{background:#eef7f1;border:1px solid #bfe0cd;border-radius:10px;padding:12px 14px;margin:12px 0;font-size:1.05rem}
+  .why{margin:10px 0;padding-left:20px}
+  .why li{margin:4px 0}
+  .docs span{display:inline-block;background:#fdf6e9;border:1px solid var(--line);border-radius:999px;padding:3px 12px;margin:3px 4px 3px 0;font-size:.92rem}
+  .small{font-size:.92rem;color:#5a6570}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .actions button{flex:1 1 200px;padding:13px;border-radius:10px;border:2px solid var(--green);background:#fff;color:var(--green-dark);font-size:1.02rem;font-weight:700;cursor:pointer}
+  .actions button.primary{background:var(--green);color:#fff}
+  footer{max-width:860px;margin:0 auto;padding:0 16px 34px;color:#5a6570;font-size:.92rem}
+  @media print{
+    header,.card.formcard,.actions,.samples,.langbar{display:none}
+    body{background:#fff}
+    .scheme{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Haq<span class="accent">Setu</span></h1>
+  <p id="tagline">Every government benefit you are owed — in your language, in one minute.</p>
+  <div class="langbar">
+    <button id="btnEn" class="active" onclick="setLang('en')">English</button>
+    <button id="btnHi" onclick="setLang('hi')">हिंदी</button>
+  </div>
+</header>
+
+<main>
+  <div class="pain" id="pain">India runs hundreds of welfare schemes — pensions, scholarships, health cover, farmer support, business loans. But the information sits scattered across dozens of English portals and PDFs. So lakhs of people never claim what is already theirs. HaqSetu fixes that: answer a few questions, and see exactly what you qualify for.</div>
+
+  <div class="steps">
+    <div><b id="s1t">1. Tell us about yourself</b><br><span id="s1">A few simple questions. Nothing is saved or sent anywhere.</span></div>
+    <div><b id="s2t">2. See your matches</b><br><span id="s2">Every scheme you qualify for, and exactly why.</span></div>
+    <div><b id="s3t">3. Carry one checklist</b><br><span id="s3">All the documents you need, in one printable list.</span></div>
+  </div>
+
+  <section class="card formcard">
+    <h2 id="formTitle">Tell us about yourself</h2>
+    <p class="small" id="sampleLabel">In a hurry? Try a sample person:</p>
+    <div class="samples">
+      <button onclick="fillSample(0)" id="sample0">Farmer, 68</button>
+      <button onclick="fillSample(1)" id="sample1">New mother, 24</button>
+      <button onclick="fillSample(2)" id="sample2">Widow, 45</button>
+      <button onclick="fillSample(3)" id="sample3">Potter, 35</button>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label for="age" id="lAge">Your age</label>
+        <input type="number" id="age" min="1" max="110" value="68">
+      </div>
+      <div>
+        <label for="gender" id="lGender">Gender</label>
+        <select id="gender">
+          <option value="female">Female</option>
+          <option value="male" selected>Male</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div>
+        <label for="occupation" id="lOcc">What work do you do?</label>
+        <select id="occupation"></select>
+      </div>
+      <div>
+        <label for="income" id="lIncome">Household income per month</label>
+        <select id="income">
+          <option value="lt10">Under Rs 10,000</option>
+          <option value="10to30">Rs 10,000 – Rs 30,000</option>
+          <option value="30to60">Rs 30,000 – Rs 60,000</option>
+          <option value="gt60">Above Rs 60,000</option>
+        </select>
+      </div>
+      <div>
+        <label for="category" id="lCat">Category</label>
+        <select id="category">
+          <option value="general">General</option>
+          <option value="obc">OBC</option>
+          <option value="sc">SC</option>
+          <option value="st">ST</option>
+          <option value="minority">Minority</option>
+        </select>
+      </div>
+    </div>
+
+    <label id="lFlags">Tick everything that is true for you</label>
+    <div class="flags" id="flags"></div>
+
+    <button class="find" id="findBtn" onclick="runMatch()">Find my benefits</button>
+  </section>
+
+  <section id="results"></section>
+</main>
+
+<footer>
+  <p id="disclaimer">HaqSetu summarises public information about central government schemes in plain language. Final eligibility is always confirmed by the government on the official portal or at the office — carry your documents and this checklist. Your answers never leave this device: this page works fully offline and saves nothing.</p>
+  <p>Built for the Ctrl+V Hackathon (access theme) · Haq = one's rightful entitlement · Setu = bridge</p>
+</footer>
+
+<script src="schemes.js"></script>
+<script>
+var LANG = "en";
+
+var T = {
+  en: {
+    tagline: "Every government benefit you are owed — in your language, in one minute.",
+    pain: "India runs hundreds of welfare schemes — pensions, scholarships, health cover, farmer support, business loans. But the information sits scattered across dozens of English portals and PDFs. So lakhs of people never claim what is already theirs. HaqSetu fixes that: answer a few questions, and see exactly what you qualify for.",
+    s1t: "1. Tell us about yourself", s1: "A few simple questions. Nothing is saved or sent anywhere.",
+    s2t: "2. See your matches", s2: "Every scheme you qualify for, and exactly why.",
+    s3t: "3. Carry one checklist", s3: "All the documents you need, in one printable list.",
+    formTitle: "Tell us about yourself", sampleLabel: "In a hurry? Try a sample person:",
+    samples: ["Farmer, 68", "New mother, 24", "Widow, 45", "Potter, 35"],
+    lAge: "Your age", lGender: "Gender", gender: { female: "Female", male: "Male", other: "Other" },
+    lOcc: "What work do you do?",
+    occ: { farmer: "Farmer", unorganised: "Daily-wage / unorganised worker", artisan: "Artisan / craftsperson", student: "Student", selfemployed: "Self-employed", salaried: "Salaried job", homemaker: "Homemaker", unemployed: "Not working right now", other: "Other" },
+    lIncome: "Household income per month",
+    income: { lt10: "Under Rs 10,000", "10to30": "Rs 10,000 – Rs 30,000", "30to60": "Rs 30,000 – Rs 60,000", gt60: "Above Rs 60,000" },
+    lCat: "Category", cat: { general: "General", obc: "OBC", sc: "SC", st: "ST", minority: "Minority" },
+    lFlags: "Tick everything that is true for you",
+    flags: { bpl: "My family has a BPL / Antyodaya ration card", farmland: "I own farmland", widow: "I am a widow", pregnant: "I am pregnant (first child)", girlChild: "I have a daughter under 10", disability: "I live with a severe disability", business: "I want to start or grow a small business", schoolKids: "My children go to school", noBank: "I do not have a bank account yet" },
+    findBtn: "Find my benefits",
+    found: function (n) { return n + " scheme" + (n === 1 ? "" : "s") + " match your details"; },
+    whyTitle: "Why you qualify", docsTitle: "Documents to carry", applyTitle: "Where to apply",
+    portal: "Official portal", checklist: "Your documents checklist — take this with you",
+    listen: "Listen to my benefits", stop: "Stop", print: "Print my checklist",
+    none: "No strong matches for these details yet. Try the sample profiles above, or tick any flag you may have missed — one tick can change the list.",
+    disclaimer: "HaqSetu summarises public information about central government schemes in plain language. Final eligibility is always confirmed by the government on the official portal or at the office — carry your documents and this checklist. Your answers never leave this device: this page works fully offline and saves nothing.",
+    speechIntro: function (n) { return "You qualify for " + n + " schemes. "; }
+  },
+  hi: {
+    tagline: "हर सरकारी लाभ जो आपका हक़ है — आपकी भाषा में, एक मिनट में।",
+    pain: "भारत में सैकड़ों कल्याण योजनाएँ चलती हैं — पेंशन, छात्रवृत्ति, स्वास्थ्य कवर, किसान सहायता, व्यापार ऋण। लेकिन जानकारी दर्जनों अंग्रेज़ी पोर्टल और PDF में बिखरी है। इसलिए लाखों लोग वह दावा ही नहीं करते जो पहले से उनका है। हक़सेतु इसे ठीक करता है: कुछ सवालों के जवाब दें, और देखें कि आप ठीक-ठीक किसके हक़दार हैं।",
+    s1t: "1. अपने बारे में बताएँ", s1: "कुछ सरल सवाल। कुछ भी सहेजा या कहीं भेजा नहीं जाता।",
+    s2t: "2. अपने मिलान देखें", s2: "हर योजना जिसके आप हक़दार हैं, और ठीक-ठीक क्यों।",
+    s3t: "3. एक चेकलिस्ट साथ ले जाएँ", s3: "आपके लिए ज़रूरी सभी दस्तावेज़, एक छपने योग्य सूची में।",
+    formTitle: "अपने बारे में बताएँ", sampleLabel: "जल्दी में हैं? किसी नमूना व्यक्ति को आज़माएँ:",
+    samples: ["किसान, 68", "नई माँ, 24", "विधवा, 45", "कुम्हार, 35"],
+    lAge: "आपकी आयु", lGender: "लिंग", gender: { female: "महिला", male: "पुरुष", other: "अन्य" },
+    lOcc: "आप क्या काम करते हैं?",
+    occ: { farmer: "किसान", unorganised: "दिहाड़ी / असंगठित मज़दूर", artisan: "कारीगर / शिल्पकार", student: "छात्र", selfemployed: "स्वरोज़गार", salaried: "वेतनभोगी नौकरी", homemaker: "गृहिणी", unemployed: "फ़िलहाल काम नहीं", other: "अन्य" },
+    lIncome: "परिवार की मासिक आय",
+    income: { lt10: "10,000 रुपये से कम", "10to30": "10,000 – 30,000 रुपये", "30to60": "30,000 – 60,000 रुपये", gt60: "60,000 रुपये से अधिक" },
+    lCat: "श्रेणी", cat: { general: "सामान्य", obc: "ओबीसी", sc: "एससी", st: "एसटी", minority: "अल्पसंख्यक" },
+    lFlags: "जो कुछ भी आपके लिए सच है, उस पर टिक करें",
+    flags: { bpl: "मेरे परिवार के पास बीपीएल / अंत्योदय राशन कार्ड है", farmland: "मेरे पास खेती की ज़मीन है", widow: "मैं विधवा हूँ", pregnant: "मैं गर्भवती हूँ (पहला बच्चा)", girlChild: "मेरी बेटी 10 साल से छोटी है", disability: "मुझे गंभीर दिव्यांगता है", business: "मैं छोटा व्यापार शुरू करना या बढ़ाना चाहता हूँ", schoolKids: "मेरे बच्चे स्कूल जाते हैं", noBank: "मेरे पास अभी बैंक खाता नहीं है" },
+    findBtn: "मेरे लाभ खोजें",
+    found: function (n) { return n + " योजनाएँ आपकी जानकारी से मेल खाती हैं"; },
+    whyTitle: "आप क्यों हक़दार हैं", docsTitle: "साथ ले जाने वाले दस्तावेज़", applyTitle: "कहाँ आवेदन करें",
+    portal: "आधिकारिक पोर्टल", checklist: "आपकी दस्तावेज़ चेकलिस्ट — इसे साथ ले जाएँ",
+    listen: "मेरे लाभ सुनें", stop: "रोकें", print: "मेरी चेकलिस्ट छापें",
+    none: "इन जानकारियों के लिए अभी कोई मज़बूत मिलान नहीं है। ऊपर दिए नमूना प्रोफ़ाइल आज़माएँ, या कोई छूटा हुआ टिक लगाएँ — एक टिक से सूची बदल सकती है।",
+    disclaimer: "हक़सेतु केंद्र सरकार की योजनाओं की सार्वजनिक जानकारी को सरल भाषा में प्रस्तुत करता है। अंतिम पात्रता हमेशा सरकार द्वारा आधिकारिक पोर्टल या कार्यालय में ही निश्चित होती है — अपने दस्तावेज़ और यह चेकलिस्ट साथ ले जाएँ। आपके जवाब इस डिवाइस से बाहर कभी नहीं जाते: यह पेज पूरी तरह ऑफ़लाइन चलता है और कुछ भी सहेजता नहीं है।",
+    speechIntro: function (n) { return "आप " + n + " योजनाओं के हक़दार हैं। "; }
+  }
+};
+
+var FLAG_KEYS = ["bpl", "farmland", "widow", "pregnant", "girlChild", "disability", "business", "schoolKids", "noBank"];
+var SAMPLES = [
+  { age: 68, gender: "male", occupation: "farmer", income: "lt10", category: "obc", flags: { farmland: true, bpl: true } },
+  { age: 24, gender: "female", occupation: "homemaker", income: "lt10", category: "general", flags: { pregnant: true, bpl: true } },
+  { age: 45, gender: "female", occupation: "unorganised", income: "lt10", category: "sc", flags: { widow: true, bpl: true } },
+  { age: 35, gender: "male", occupation: "artisan", income: "10to30", category: "obc", flags: { business: true } }
+];
+
+function el(id) { return document.getElementById(id); }
+function t() { return T[LANG]; }
+
+function buildForm() {
+  var occ = el("occupation"); occ.innerHTML = "";
+  Object.keys(t().occ).forEach(function (k) {
+    var o = document.createElement("option"); o.value = k; o.textContent = t().occ[k]; occ.appendChild(o);
+  });
+  occ.value = "farmer";
+  var flags = el("flags"); flags.innerHTML = "";
+  FLAG_KEYS.forEach(function (k) {
+    var lab = document.createElement("label");
+    var cb = document.createElement("input"); cb.type = "checkbox"; cb.id = "flag_" + k;
+    lab.appendChild(cb);
+    lab.appendChild(document.createTextNode(t().flags[k]));
+    flags.appendChild(lab);
+  });
+}
+
+function setLang(l) {
+  LANG = l;
+  document.documentElement.lang = (l === "hi") ? "hi" : "en";
+  el("btnEn").classList.toggle("active", l === "en");
+  el("btnHi").classList.toggle("active", l === "hi");
+  el("tagline").textContent = t().tagline;
+  el("pain").textContent = t().pain;
+  el("s1t").textContent = t().s1t; el("s1").textContent = t().s1;
+  el("s2t").textContent = t().s2t; el("s2").textContent = t().s2;
+  el("s3t").textContent = t().s3t; el("s3").textContent = t().s3;
+  el("formTitle").textContent = t().formTitle;
+  el("sampleLabel").textContent = t().sampleLabel;
+  for (var i = 0; i < 4; i++) el("sample" + i).textContent = t().samples[i];
+  el("lAge").textContent = t().lAge; el("lGender").textContent = t().lGender;
+  var g = el("gender");
+  for (var j = 0; j < g.options.length; j++) g.options[j].textContent = t().gender[g.options[j].value];
+  el("lOcc").textContent = t().lOcc;
+  el("lIncome").textContent = t().lIncome;
+  var inc = el("income");
+  for (var m = 0; m < inc.options.length; m++) inc.options[m].textContent = t().income[inc.options[m].value];
+  el("lCat").textContent = t().lCat;
+  var cat = el("category");
+  for (var n = 0; n < cat.options.length; n++) cat.options[n].textContent = t().cat[cat.options[n].value];
+  el("lFlags").textContent = t().lFlags;
+  el("findBtn").textContent = t().findBtn;
+  el("disclaimer").textContent = t().disclaimer;
+  var keepOcc = el("occupation").value, keepFlags = {};
+  FLAG_KEYS.forEach(function (k) { var c = el("flag_" + k); if (c) keepFlags[k] = c.checked; });
+  buildForm();
+  el("occupation").value = keepOcc || "farmer";
+  FLAG_KEYS.forEach(function (k) { if (keepFlags[k]) el("flag_" + k).checked = true; });
+  if (window._lastMatches) render(window._lastMatches);
+}
+
+function readProfile() {
+  var flags = {};
+  FLAG_KEYS.forEach(function (k) { flags[k] = el("flag_" + k).checked; });
+  return {
+    age: parseInt(el("age").value, 10) || 0,
+    gender: el("gender").value,
+    occupation: el("occupation").value,
+    income: el("income").value,
+    category: el("category").value,
+    flags: flags
+  };
+}
+
+function fillSample(i) {
+  var s = SAMPLES[i];
+  el("age").value = s.age; el("gender").value = s.gender;
+  el("occupation").value = s.occupation; el("income").value = s.income; el("category").value = s.category;
+  FLAG_KEYS.forEach(function (k) { el("flag_" + k).checked = !!s.flags[k]; });
+  runMatch();
+  el("results").scrollIntoView({ behavior: "smooth" });
+}
+
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+function render(matches) {
+  window._lastMatches = matches;
+  var box = el("results");
+  if (!matches.length) {
+    box.innerHTML = '<section class="card"><h2>' + esc(t().none) + "</h2></section>";
+    return;
+  }
+  var html = '<section class="card"><div class="result-head"><h2>' + esc(t().found(matches.length)) + '</h2></div>';
+  matches.forEach(function (m) {
+    var s = m.scheme;
+    html += '<article class="scheme"><h3>' + esc(LANG === "hi" ? s.nameHi : s.name) + '<span class="tag">' + esc(s.tag[LANG]) + "</span></h3>";
+    html += "<p>" + esc(s.summary[LANG]) + "</p>";
+    html += '<div class="benefit"><b>' + esc(s.benefit[LANG]) + "</b></div>";
+    html += "<p><b>" + esc(t().whyTitle) + "</b></p><ul class='why'>";
+    m.why.forEach(function (w) { html += "<li>" + esc(w[LANG]) + "</li>"; });
+    html += "</ul>";
+    html += "<p><b>" + esc(t().docsTitle) + '</b></p><p class="docs">';
+    s.docs.forEach(function (d) { html += "<span>" + esc(HAQ.DOCS[d][LANG]) + "</span>"; });
+    html += "</p>";
+    html += "<p><b>" + esc(t().applyTitle) + ":</b> " + esc(s.apply[LANG]);
+    if (s.portal) html += ' <span class="small">(' + esc(t().portal) + ": " + esc(s.portal) + ")</span>";
+    html += "</p></article>";
+  });
+  var docs = HAQ.documentsFor(matches);
+  html += '<div class="scheme"><h3>' + esc(t().checklist) + '</h3><p class="docs">';
+  docs.forEach(function (d) { html += "<span>" + esc(HAQ.DOCS[d][LANG]) + "</span>"; });
+  html += "</p></div>";
+  html += '<div class="actions"><button class="primary" onclick="speak()">' + esc(t().listen) + '</button><button onclick="window.print()">' + esc(t().print) + "</button></div>";
+  html += "</section>";
+  box.innerHTML = html;
+}
+
+function runMatch() {
+  render(HAQ.matchSchemes(readProfile()));
+}
+
+function speak() {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  var matches = window._lastMatches || [];
+  if (!matches.length) return;
+  var text = t().speechIntro(matches.length);
+  matches.forEach(function (m) {
+    text += (LANG === "hi" ? m.scheme.nameHi : m.scheme.name) + ". " + m.scheme.benefit[LANG] + " ";
+  });
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = (LANG === "hi") ? "hi-IN" : "en-IN";
+  u.rate = 0.98;
+  window.speechSynthesis.speak(u);
+}
+
+buildForm();
+el("occupation").value = "farmer";
+el("flag_farmland").checked = true;
+el("flag_bpl").checked = true;
+runMatch();
+</script>
+</body>
+</html>
